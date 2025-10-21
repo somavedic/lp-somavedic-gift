@@ -3,9 +3,11 @@
   A comprehensive landing page showcasing gift bundles and benefits
 {% endcomment %}
 
-{% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 400000 %}
+{% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 460000 %}
 {% assign gift_value_cents = section.settings.gift_value_cents | default: 265000 %}
 {% assign gift_value_label = section.settings.gift_value_label | default: 'Up to' %}
+{% assign gift_threshold_money = gift_threshold_cents | money_with_currency %}
+{% assign gift_value_money = gift_value_cents | money_with_currency %}
 
 <section class="somavedic-gift-landing" data-section-id="{{ section.id }}">
   <!-- Hero Section -->
@@ -23,9 +25,9 @@
             {% if section.settings.hero_description != blank %}
               {{ section.settings.hero_description }}
             {% else %}
-              Treat yourself to extra harmony today. Spend {{ gift_threshold_cents | money }} or more on Somavedic
-              devices and choose another one as our gift to you, or your family/friends—{{ gift_value_label }}
-              {{ gift_value_cents | money }} value!
+              Treat yourself to extra harmony today. Spend {{ gift_threshold_money }} or more on Somavedic devices and
+              choose another one as our gift to you, or your family/friends - {{ gift_value_label }}
+              {{ gift_value_money }} value!
             {% endif %}
           </p>
           <a href="{{ section.settings.hero_cta_link | default: '/collections/all' }}" class="hero-cta-btn">
@@ -152,8 +154,22 @@
                     </div>
                   </div>
                   <div class="step-content">
+                    {% assign step_description = block.settings.description %}
+                    {% if step_description == blank %}
+                      {% if forloop.first %}
+                        {% assign step_description = 'Add Somavedic devices to your cart until you reach {{threshold}} or more.' %}
+                      {% elsif forloop.index == 2 %}
+                        {% assign step_description = 'Before completing your order, select the Somavedic device you will receive as your {{gift_value}} gift.' %}
+                      {% else %}
+                        {% assign step_description = 'Get ready to enjoy a full dose of harmonizing treasures.' %}
+                      {% endif %}
+                    {% endif %}
+                    {% assign step_description = step_description
+                      | replace: '{{threshold}}', gift_threshold_money
+                      | replace: '{{gift_value}}', gift_value_money
+                    %}
                     <h3 class="step-title">{{ block.settings.title }}</h3>
-                    <p class="step-description">{{ block.settings.description }}</p>
+                    <p class="step-description">{{ step_description }}</p>
                   </div>
                 </div>
               {% endif %}
@@ -203,10 +219,12 @@
     <div class="container">
       <h2 class="section-title">{{ section.settings.bundles_title | default: 'Your Path to Harmony' }}</h2>
       <p class="section-subtitle">
-        {{
-          section.settings.bundles_subtitle
-          | default: 'Perfectly paired combinations designed to hit the $4,000 threshold while creating a complete home solution.'
-        }}
+        {% if section.settings.bundles_subtitle != blank %}
+          {{ section.settings.bundles_subtitle }}
+        {% else %}
+          Perfectly paired combinations designed to hit the {{ gift_threshold_money }} spend threshold while creating a
+          complete home solution.
+        {% endif %}
       </p>
 
       <div class="bundles-grid">
@@ -308,7 +326,10 @@
                     </div>
                     <div class="gift-value">
                       <span class="gift-label">Gift Value</span>
-                      <span class="gift-value-text">{{ block.settings.gift_value }}</span>
+                      <span class="gift-value-text">
+                        {{- block.settings.gift_value | default: gift_value_label }}
+                        {{ gift_value_money -}}
+                      </span>
                     </div>
                   </div>
                   <button
@@ -327,7 +348,7 @@
 
       <p class="bundles-note">
         All bundles qualify for a free gift. Choose any Somavedic device {{ gift_value_label }}
-        {{ gift_value_cents | money }} value!
+        {{ gift_value_money }} value!
       </p>
     </div>
   </div>
@@ -1495,8 +1516,7 @@
     {
       "type": "textarea",
       "id": "hero_description",
-      "label": "Hero Description",
-      "default": ""
+      "label": "Hero Description"
     },
     {
       "type": "number",
@@ -1576,7 +1596,7 @@
       "type": "textarea",
       "id": "bundles_subtitle",
       "label": "Bundles Subtitle",
-      "default": "Perfectly paired combinations designed to hit the $4,000 threshold while creating a complete home solution."
+      "default": "Perfectly paired combinations designed to hit the spend threshold while creating a complete home solution."
     },
     {
       "type": "header",
@@ -1618,7 +1638,7 @@
       "type": "richtext",
       "id": "final_cta_content",
       "label": "Final CTA Content",
-      "default": "<p>Every day spent in a harmonious environment means <strong>stronger immunity</strong>, <strong>deeper regeneration</strong>, and happier days. Start creating your ideal home today — a place where your <strong>body can relax</strong> and your <strong>mind can slow down</strong>. Gift yourself lasting harmony.</p>"
+      "default": "<p>Every day spent in a harmonious environment means <strong>stronger immunity</strong>, <strong>deeper regeneration</strong>, and happier days. Start creating your ideal home today - a place where your <strong>body can relax</strong> and your <strong>mind can slow down</strong>. Gift yourself lasting harmony.</p>"
     },
     {
       "type": "text",
@@ -1854,14 +1874,14 @@
           "type": "step",
           "settings": {
             "title": "Build Your Cart",
-            "description": "Add Somavedic devices to your cart with a total value of $4,000 or more."
+            "description": "Add Somavedic devices to your cart until you reach {{threshold}} or more."
           }
         },
         {
           "type": "step",
           "settings": {
             "title": "Choose Your Gift",
-            "description": "Before completing your order, select the Somavedic you will receive as a gift."
+            "description": "Before completing your order, select the Somavedic device you will receive as your {{gift_value}} gift."
           }
         },
         {
@@ -1899,14 +1919,14 @@
           "type": "faq",
           "settings": {
             "question": "What is the minimum purchase amount to qualify for the gift?",
-            "answer": "You need to spend $4,000 or more on Somavedic devices to qualify for the free gift."
+            "answer": "You need to meet the current spend threshold on Somavedic devices to qualify for the free gift."
           }
         },
         {
           "type": "faq",
           "settings": {
             "question": "Can I choose any Somavedic model as my gift?",
-            "answer": "Yes, you can choose any Somavedic device up to $2,650 value as your free gift."
+            "answer": "Yes, you can choose any Somavedic device up to the advertised gift value."
           }
         },
         {
