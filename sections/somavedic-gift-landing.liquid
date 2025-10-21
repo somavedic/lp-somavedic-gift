@@ -6,8 +6,8 @@
 {% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 460000 %}
 {% assign gift_value_cents = section.settings.gift_value_cents | default: 265000 %}
 {% assign gift_value_label = section.settings.gift_value_label | default: 'Up to' %}
-{% assign gift_threshold_money = gift_threshold_cents | money_with_currency %}
-{% assign gift_value_money = gift_value_cents | money_with_currency %}
+{% assign gift_threshold_money = gift_threshold_cents | money_without_trailing_zeros %}
+{% assign gift_value_money = gift_value_cents | money_without_trailing_zeros %}
 
 <section class="somavedic-gift-landing" data-section-id="{{ section.id }}">
   <!-- Hero Section -->
@@ -215,7 +215,7 @@
   </div>
 
   <!-- Bundle Products Section -->
-  <div class="bundles-section">
+  <div id="bundles-section" class="bundles-section">
     <div class="container">
       <h2 class="section-title">{{ section.settings.bundles_title | default: 'Your Path to Harmony' }}</h2>
       <p class="section-subtitle">
