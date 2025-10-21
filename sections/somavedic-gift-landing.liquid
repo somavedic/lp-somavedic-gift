@@ -263,6 +263,10 @@
                   endif
                 endfor
               %}
+              {% if has_variant_for_total %}
+                {% assign bundle_total_amount = bundle_total_cents | plus: 0 %}
+                {% assign bundle_total_money = bundle_total_amount | money_without_trailing_zeros %}
+              {% endif %}
               <div class="bundle-content">
                 <div class="bundle-header">
                   <h3 class="bundle-title">{{ block.settings.title }}</h3>
@@ -316,7 +320,7 @@
                       <span class="price-label">Total Price</span>
                       <span class="price-value">
                         {% if has_variant_for_total %}
-                          {{ bundle_total_cents | money }}
+                          {{ bundle_total_money }}
                         {% elsif block.settings.total_price != blank %}
                           {{ block.settings.total_price }}
                         {% else %}
@@ -638,6 +642,7 @@
     color: #022669;
     text-align: center;
     margin: 0 auto 32px;
+    max-width: 800px;
   }
 
   /* How It Works Section */
@@ -674,6 +679,11 @@
     padding: 24px;
     box-shadow: 0 12px 24px rgba(2, 38, 105, 0.05);
     position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .step-card:hover {
+    border: 1px solid rgb(2 38 105 / 30%);
   }
 
   .step-icon {
@@ -759,7 +769,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 320px;
+    height: 656px;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
   }
 
@@ -771,7 +781,6 @@
   .how-it-works-video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: block;
     transition: opacity 0.3s ease;
   }
@@ -825,8 +834,12 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    transition: all 0.3s ease;
   }
 
+  .bundle-card:hover {
+    border: 1px solid rgb(2 38 105 / 30%);
+  }
   .bundle-image {
     height: auto;
     overflow: hidden;
@@ -835,7 +848,7 @@
 
   .bundle-image img {
     width: 100%;
-    height: auto;
+    height: 280px;
     display: block;
     object-fit: cover;
   }
@@ -958,7 +971,7 @@
     font-weight: 500;
     font-size: 18px;
     line-height: 28px;
-    color: #022669;
+    color: #16910b;
     text-align: right;
   }
 
@@ -1229,6 +1242,9 @@
   }
 
   @media (max-width: 768px) {
+    .hero-section {
+      margin-top: -35px;
+    }
     .hero-title {
       font-size: 48px;
       line-height: 48px;
@@ -1260,6 +1276,10 @@
     .faq-section,
     .final-cta-section {
       padding: 64px 0;
+    }
+
+    .steps-list {
+      gap: 16px;
     }
 
     .step-card {
@@ -1295,6 +1315,15 @@
       font-size: 14px;
       line-height: 22px;
       padding: 16px;
+    }
+    .bundle-cta-btn {
+      padding: 13px 32px;
+    }
+
+    .gift-badge {
+      border-radius: 16px;
+      padding: 3px 8px;
+      white-space: nowrap;
     }
   }
 </style>
@@ -1522,8 +1551,8 @@
       "type": "number",
       "id": "gift_threshold_cents",
       "label": "Gift Threshold (cents)",
-      "default": 400000,
-      "info": "Enter the minimum spend threshold in cents (e.g., 400000 = $4,000)."
+      "default": 460000,
+      "info": "Enter the minimum spend threshold in cents (e.g., 460000 = $4,600)."
     },
     {
       "type": "number",
