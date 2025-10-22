@@ -5,7 +5,7 @@
 
 {% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 9500000 %}
 {% assign gift_value_cents = section.settings.gift_value_cents | default: 4985200 %}
-{% assign gift_value_label = section.settings.gift_value_label | default: 'Až do' %}
+{% assign gift_value_label = section.settings.gift_value_label | default: 'až' %}
 {% assign gift_threshold_money = gift_threshold_cents | money_without_trailing_zeros %}
 {% assign gift_value_money = gift_value_cents | money_without_trailing_zeros %}
 
@@ -25,8 +25,8 @@
             {% if section.settings.hero_description != blank %}
               {{ section.settings.hero_description }}
             {% else %}
-              Dopřejte si dnes extra harmonii. Utraťte za zařízení Somavedic {{ gift_threshold_money }} nebo více a
-              vyberte si další jako náš dárek pro vás či vaši rodinu/přátele – v hodnotě {{ gift_value_label }}
+              Dopřejte si extra harmonii. Nakupte za {{ gift_threshold_money }} nebo více a vyberte si další Somavedic
+              jako dárek zdarma pro vás či vaši rodinu/přátele – v hodnotě {{ gift_value_label }}
               {{ gift_value_money }}!
             {% endif %}
           </p>
@@ -1612,7 +1612,7 @@
       "type": "text",
       "id": "gift_value_label",
       "label": "Prefix hodnoty dárku",
-      "default": "Až do",
+      "default": "Až",
       "info": "Volitelný text před hodnotou dárku (např. Až do)."
     },
     {
