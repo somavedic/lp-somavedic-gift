@@ -339,6 +339,7 @@
                   <button
                     class="bundle-cta-btn"
                     data-bundle-id="{{ block.id }}"
+                    type="button"
                     onclick="addBundleToCart('{{ block.id }}')"
                   >
                     Add Bundle & Choose Gift
@@ -349,11 +350,17 @@
           {% endif %}
         {% endfor %}
       </div>
+      <div class="bundles-note-container">
+        <p class="bundles-note">
+          All bundles qualify for a free gift. Build your cart any way you like — mix and match your favorite Somavedic
+          devices to reach the free Somavedic threshold. Choose any Somavedic device {{ gift_value_label }}
+          {{ gift_value_money }} in value as your gift!
+        </p>
 
-      <p class="bundles-note">
-        All bundles qualify for a free gift. Choose any Somavedic device {{ gift_value_label }}
-        {{ gift_value_money }} value!
-      </p>
+        <a href="{{ section.settings.final_cta_link | default: '/collections/all' }}" class="final-cta-btn">
+          {{- section.settings.final_cta_text | default: 'Buy Now' -}}
+        </a>
+      </div>
     </div>
   </div>
 
@@ -641,7 +648,7 @@
     line-height: 28px;
     color: #022669;
     text-align: center;
-    margin: 0 auto 32px;
+    margin: 0 auto 48px;
     max-width: 800px;
   }
 
@@ -1004,6 +1011,15 @@
     cursor: not-allowed;
   }
 
+  .bundles-note-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    max-width: 672px;
+    margin: 0 auto;
+  }
+
   .bundles-note {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
@@ -1084,7 +1100,7 @@
 
   .faq-list {
     max-width: 768px;
-    margin: 0 auto;
+    margin: 48px auto 0;
   }
 
   .faq-item {
@@ -1123,7 +1139,7 @@
   }
 
   .faq-item.active .faq-answer {
-    max-height: 200px;
+    max-height: 400px;
   }
 
   .faq-answer p {
@@ -1245,9 +1261,13 @@
     .hero-section {
       margin-top: -35px;
     }
+    .hero-subtitle {
+      font-size: 18px;
+      line-height: 24px;
+    }
     .hero-title {
-      font-size: 48px;
-      line-height: 48px;
+      font-size: 32px;
+      line-height: 40px;
     }
 
     .hero-description {
@@ -1264,7 +1284,6 @@
       font-size: 18px;
       line-height: 26px;
     }
-
     .hero-container,
     .container {
       padding: 32px 16px;
@@ -1316,8 +1335,15 @@
       line-height: 22px;
       padding: 16px;
     }
+
+    .bundle-image img {
+      width: 100%;
+      height: 161px;
+      display: block;
+      object-fit: contain;
+    }
     .bundle-cta-btn {
-      padding: 13px 32px;
+      padding: 13px 24px;
     }
 
     .gift-badge {
@@ -1360,6 +1386,15 @@
           } else {
             item.classList.add('active');
           }
+        });
+      });
+
+      const bundleButtons = document.querySelectorAll('.bundle-cta-btn');
+      bundleButtons.forEach((button) => {
+        button.classList.add('bundle-cta-btn--ajax');
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
         });
       });
     });
@@ -1903,14 +1938,14 @@
           "type": "step",
           "settings": {
             "title": "Build Your Cart",
-            "description": "Add Somavedic devices to your cart until you reach {{threshold}} or more."
+            "description": "Add Somavedic devices to your cart until you meet the qualifying spend."
           }
         },
         {
           "type": "step",
           "settings": {
             "title": "Choose Your Gift",
-            "description": "Before completing your order, select the Somavedic device you will receive as your {{gift_value}} gift."
+            "description": "Before completing your order, select the Somavedic device you will receive as your gift."
           }
         },
         {
@@ -1966,13 +2001,19 @@
           }
         },
         {
+          "type": "faq",
+          "settings": {
+            "question": "Why one Somavedic may not be enough for complete home protection?",
+            "answer": "Whether a single Somavedic is sufficient for your entire home depends on several factors beyond just square footage. Somavedic devices emit a 360-degree harmonizing field with a reach of up to 30 meters (about 100 feet) in all directions. However, the effectiveness of that field can be influenced by factors such as electrosmog (EMFs), geopathic stress zones, and even the emotional or energetic atmosphere of your space. These subtle variables can differ significantly from one home to another. That’s why we can’t guarantee that one device will be enough for every home. In many cases, a model like the Vedic or Amber is a powerful starting point - especially for smaller spaces. But if your home is larger, has multiple floors, stronger EMF exposure, or if you’re particularly sensitive, you may benefit from placing additional devices in other areas to strengthen and extend the harmonizing field."
+          }
+        },
+        {
           "type": "bundle",
           "settings": {
             "title": "The Ultimate Amber Sanctuary",
-            "description": "For those who want the absolute best. This combines the power of Amber with two complementary units for creating a comprehensive, high-vibration field in larger spaces or multiple rooms.",
-            "product_1": "1 × Amber",
-            "product_2": "1 × Rosalin",
-            "product_3": "1 × Anthracite",
+            "description": "Experience unmatched protection and support - perfect for those embracing the comfort of smart homes and the innovation of electric or hybrid vehicles.",
+            "product_1": "2 × Amber",
+            "product_qty_1": 2,
             "gift_value": "Up to"
           }
         },
@@ -1983,25 +2024,30 @@
             "description": "The perfect package for total protection, whether you're at home or on the road. It combines a powerful main unit with dedicated travel and complementary devices.",
             "product_1": "1 × Amber",
             "product_2": "1 × Rosalin",
-            "product_3": "1 × Traveller",
+            "product_3": "1 × Anthracite",
+            "product_4": "1 × Traveller",
+            "product_qty_1": 1,
+            "product_qty_2": 1,
+            "product_qty_3": 1,
+            "product_qty_4": 1,
             "gift_value": "Up to"
           }
         },
         {
           "type": "bundle",
           "settings": {
-            "title": "The Vedic Power Household",
-            "description": "Ideal for creating a harmonized field across an entire home. Use one Vedic in the main living area and place the others in bedrooms or home offices for a complete bubble of coherence.",
-            "product_1": "4 × Vedic",
-            "product_qty_1": 4,
+            "title": "The Vedic Home Harmony Collection",
+            "description": "Designed for families and multi-generational homes, this set surrounds your living space with a unified field of balance. Use one Vedic in the heart of the home and place the others in bedrooms or offices to extend harmony to every family member and guest.",
+            "product_1": "5 × Vedic",
+            "product_qty_1": 5,
             "gift_value": "Up to"
           }
         },
         {
           "type": "bundle",
           "settings": {
-            "title": "The Multi-Floor Vedic Solution",
-            "description": "A smart way to structure harmony in a multi-story home or a large apartment. This bundle uses three core units and a complementary device for targeted support.",
+            "title": "The Multi-Floor Combo Solution",
+            "description": "The intelligent solution for seamless coverage across multi-story homes, spacious apartments, or office environments. This bundle combines three core units with a complementary device to deliver targeted performance where you need it most.",
             "product_1": "3 × Vedic",
             "product_qty_1": 3,
             "product_2": "1 × Rosalin or Anthracite",
