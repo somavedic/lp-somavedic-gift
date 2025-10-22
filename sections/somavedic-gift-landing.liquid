@@ -1529,6 +1529,11 @@
   }
 
   function openAssortionSideCart() {
+    if (window.Assortion && window.Assortion.cart && typeof window.Assortion.cart.open === 'function') {
+      window.Assortion.cart.open();
+      return;
+    }
+
     if (window.Assortion && typeof window.Assortion.open === 'function') {
       window.Assortion.open();
       return;
