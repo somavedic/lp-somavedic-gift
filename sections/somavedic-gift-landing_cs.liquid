@@ -1,0 +1,2074 @@
+{% comment %}
+  Sekce landing page Dárky Somavedic
+  Komplexní landing page představující dárkové balíčky a jejich benefity
+{% endcomment %}
+
+{% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 9500000 %}
+{% assign gift_value_cents = section.settings.gift_value_cents | default: 4985200 %}
+{% assign gift_value_label = section.settings.gift_value_label | default: 'Až do' %}
+{% assign gift_threshold_money = gift_threshold_cents | money_without_trailing_zeros %}
+{% assign gift_value_money = gift_value_cents | money_without_trailing_zeros %}
+
+<section class="somavedic-gift-landing" data-section-id="{{ section.id }}">
+  <!-- Sekce hero -->
+  <div class="hero-section">
+    <div
+      class="hero-background"
+      style="background-image: url('{{ section.settings.hero_background_image | img_url: '1920x1080' }}');"
+    ></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <p class="hero-subtitle">{{ section.settings.hero_subtitle | default: 'Vytvořte si své útočiště' }}</p>
+          <h1 class="hero-title">{{ section.settings.hero_title | default: 'Somavedic jako dárek' }}</h1>
+          <p class="hero-description">
+            {% if section.settings.hero_description != blank %}
+              {{ section.settings.hero_description }}
+            {% else %}
+              Dopřejte si dnes extra harmonii. Utraťte za zařízení Somavedic {{ gift_threshold_money }} nebo více a
+              vyberte si další jako náš dárek pro vás či vaši rodinu/přátele – v hodnotě {{ gift_value_label }}
+              {{ gift_value_money }}!
+            {% endif %}
+          </p>
+          <a href="{{ section.settings.hero_cta_link | default: '/collections/all' }}" class="hero-cta-btn">
+            {{- section.settings.hero_cta_text | default: 'Koupit nyní' -}}
+          </a>
+        </div>
+        <div class="hero-image">
+          <div class="image-placeholder">
+            {% if section.settings.hero_product_image %}
+              <img
+                src="{{ section.settings.hero_product_image | img_url: '467x600' }}"
+                alt="{{ section.settings.hero_product_image.alt }}"
+              >
+            {% else %}
+              <span>Zástupný obrázek</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sekce Jak to funguje -->
+  <div class="how-it-works-section">
+    {% assign how_it_works_video_raw = section.settings.how_it_works_video_url | strip %}
+    {% assign has_how_it_works_video = false %}
+    {% assign is_youtube_video = false %}
+    {% assign youtube_id = '' %}
+    {% assign how_it_works_video_embed_url = '' %}
+
+    {% if how_it_works_video_raw != blank %}
+      {% assign has_how_it_works_video = true %}
+      {% assign video_url_lower = how_it_works_video_raw | downcase %}
+
+      {% if video_url_lower contains 'youtu.be/' %}
+        {% assign id_part = how_it_works_video_raw | split: 'youtu.be/' | last %}
+        {% assign youtube_id = id_part | split: '?' | first | split: '&' | first %}
+      {% elsif video_url_lower contains 'youtube.com/watch' %}
+        {% assign youtube_id = how_it_works_video_raw | split: 'v=' | last | split: '&' | first | split: '#' | first %}
+      {% elsif video_url_lower contains 'youtube.com/embed/' %}
+        {% assign id_part = how_it_works_video_raw | split: 'embed/' | last %}
+        {% assign youtube_id = id_part | split: '?' | first | split: '&' | first %}
+      {% elsif video_url_lower contains 'youtube.com/shorts/' %}
+        {% assign id_part = how_it_works_video_raw | split: 'shorts/' | last %}
+        {% assign youtube_id = id_part | split: '?' | first | split: '&' | first %}
+      {% endif %}
+
+      {% assign youtube_id = youtube_id | strip %}
+      {% if youtube_id != '' %}
+        {% assign is_youtube_video = true %}
+        {% assign how_it_works_video_embed_url = 'https://www.youtube.com/embed/'
+          | append: youtube_id
+          | append: '?autoplay=1&mute=1&loop=1&playlist='
+          | append: youtube_id
+          | append: '&controls=0&modestbranding=1&playsinline=1&enablejsapi=1'
+        %}
+      {% endif %}
+    {% endif %}
+    <div class="container">
+      <h2 class="section-title">{{ section.settings.how_it_works_title | default: 'Jak to funguje' }}</h2>
+      <div class="how-it-works-layout">
+        <div class="how-it-works-steps">
+          <div class="steps-list">
+            {% for block in section.blocks %}
+              {% if block.type == 'step' %}
+                <div class="step-card" {{ block.shopify_attributes }}>
+                  <span class="step-number" aria-hidden="true">{{ forloop.index }}</span>
+                  <div class="step-icon" aria-hidden="true">
+                    <div class="icon-background">
+                      {% if block.settings.icon_svg != blank %}
+                        {{ block.settings.icon_svg }}
+                      {% else %}
+                        {% case forloop.index %}
+                          {% when 1 %}
+                            <svg
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="none"
+                            >
+                              <path
+                                d="M8.33 16.67C8.33 12.25 11.91 8.67 16.33 8.67C20.75 8.67 24.33 12.25 24.33 16.67C24.33 21.09 20.75 24.67 16.33 24.67C11.91 24.67 8.33 21.09 8.33 16.67Z"
+                                stroke="#022669"
+                                stroke-width="2" />
+                              <path
+                                d="M16.33 12.67V20.67M12.33 16.67H20.33"
+                                stroke="#022669"
+                                stroke-width="2" />
+                            </svg>
+                          {% when 2 %}
+                            <svg
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="none"
+                            >
+                              <path
+                                d="M6.67 16C6.67 10.48 11.15 6 16.67 6C22.19 6 26.67 10.48 26.67 16C26.67 21.52 22.19 26 16.67 26C11.15 26 6.67 21.52 6.67 16Z"
+                                stroke="#022669"
+                                stroke-width="2" />
+                              <path
+                                d="M16.67 10.67V21.33M10.67 16H22.67"
+                                stroke="#022669"
+                                stroke-width="2" />
+                            </svg>
+                          {% else %}
+                            <svg
+                              width="32"
+                              height="32"
+                              viewBox="0 0 32 32"
+                              fill="none"
+                            >
+                              <path
+                                d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z"
+                                stroke="#022669"
+                                stroke-width="2" />
+                              <path
+                                d="M16 8V24M8 16H24"
+                                stroke="#022669"
+                                stroke-width="2" />
+                            </svg>
+                        {% endcase %}
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="step-content">
+                    {% assign step_description = block.settings.description %}
+                    {% if step_description == blank %}
+                      {% if forloop.first %}
+                        {% assign step_description = 'Přidejte zařízení Somavedic do košíku, dokud nedosáhnete {{threshold}} nebo více.' %}
+                      {% elsif forloop.index == 2 %}
+                        {% assign step_description = 'Než dokončíte objednávku, vyberte zařízení Somavedic, které obdržíte jako dárek v hodnotě {{gift_value}}.' %}
+                      {% else %}
+                        {% assign step_description = 'Připravte se užívat si plnou dávku harmonizačních pokladů.' %}
+                      {% endif %}
+                    {% endif %}
+                    {% assign step_description = step_description
+                      | replace: '{{threshold}}', gift_threshold_money
+                      | replace: '{{gift_value}}', gift_value_money
+                    %}
+                    <h3 class="step-title">{{ block.settings.title }}</h3>
+                    <p class="step-description">{{ step_description }}</p>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="how-it-works-media">
+          <div
+            class="how-it-works-video-wrapper{% if has_how_it_works_video %} has-video{% endif %}{% if is_youtube_video %} is-youtube{% endif %}"
+            data-how-it-works-video
+          >
+            {% if has_how_it_works_video %}
+              {% if is_youtube_video %}
+                <iframe
+                  class="how-it-works-video"
+                  title="{{ section.settings.how_it_works_title | default: 'Jak to funguje' | escape }} video"
+                  src="{{ how_it_works_video_embed_url }}"
+                  frameborder="0"
+                  allow="autoplay; fullscreen;"
+                  allowfullscreen
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                ></iframe>
+              {% else %}
+                <video
+                  class="how-it-works-video"
+                  muted
+                  playsinline
+                  loop
+                  autoplay
+                  preload="none"
+                  {% if section.settings.how_it_works_video_poster %}
+                    poster="{{ section.settings.how_it_works_video_poster | img_url: '960x540' }}"
+                  {% endif %}
+                  src="{{ how_it_works_video_raw }}"
+                ></video>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sekce dárkových balíčků -->
+  <div id="bundles-section" class="bundles-section">
+    <div class="container">
+      <h2 class="section-title">{{ section.settings.bundles_title | default: 'Vaše cesta k harmonii' }}</h2>
+      <p class="section-subtitle">
+        {% if section.settings.bundles_subtitle != blank %}
+          {{ section.settings.bundles_subtitle }}
+        {% else %}
+          Dokonale sladěné kombinace navržené tak, aby dosáhly na hranici útraty {{ gift_threshold_money }} a zároveň
+          vytvořily kompletní řešení pro vaši domácnost.
+        {% endif %}
+      </p>
+
+      <div class="bundles-grid">
+        {% for block in section.blocks %}
+          {% if block.type == 'bundle' %}
+            <div
+              class="bundle-card"
+              data-bundle-id="{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="bundle-image">
+                <img
+                  src="{{ block.settings.bundle_image | img_url: '896x512' }}"
+                  alt="{{ block.settings.bundle_image.alt }}"
+                  width="{{ block.settings.bundle_image.width }}"
+                  height="{{ block.settings.bundle_image.height }}"
+                  loading="lazy"
+                >
+              </div>
+              {% liquid
+                assign bundle_total_cents = 0
+                assign has_variant_for_total = false
+                for i in (1..5)
+                  assign product_obj_key = 'product_obj_' | append: i
+                  assign product_qty_key = 'product_qty_' | append: i
+                  assign product_obj = block.settings[product_obj_key]
+                  if product_obj != blank
+                    assign variant = product_obj.selected_or_first_available_variant
+                    if variant
+                      assign quantity = block.settings[product_qty_key] | default: 1
+                      assign quantity = quantity | plus: 0
+                      assign line_total = variant.price | times: quantity
+                      assign bundle_total_cents = bundle_total_cents | plus: line_total
+                      assign has_variant_for_total = true
+                    endif
+                  endif
+                endfor
+              %}
+              {% if has_variant_for_total %}
+                {% assign bundle_total_amount = bundle_total_cents | plus: 0 %}
+                {% assign bundle_total_money = bundle_total_amount | money_without_trailing_zeros %}
+              {% endif %}
+              <div class="bundle-content">
+                <div class="bundle-header">
+                  <h3 class="bundle-title">{{ block.settings.title }}</h3>
+                  <span class="gift-badge">+ DÁREK zdarma!</span>
+                </div>
+                <p class="bundle-description">{{ block.settings.description }}</p>
+
+                <div class="products-list">
+                  <p class="products-label">Zahrnuté produkty:</p>
+                  <ul class="products-items">
+                    {% for i in (1..5) %}
+                      {% assign product_key = 'product_' | append: i %}
+                      {% assign product_obj_key = 'product_obj_' | append: i %}
+                      {% assign product_qty_key = 'product_qty_' | append: i %}
+                      {% if block.settings[product_key] != blank %}
+                        <li>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="16"
+                            height="16"
+                            color="#821f82"
+                            fill="none"
+                          >
+                            <circle opacity="0.4" cx="12" cy="12" r="4" fill="#821f82"></circle>
+                            <circle cx="12" cy="12" r="9" stroke="#821f82" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle>
+                            <circle cx="12" cy="12" r="4" stroke="#821f82" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></circle>
+                          </svg>
+                          <span class="product-name">{{ block.settings[product_key] }}</span>
+                          {% if block.settings[product_obj_key] != blank %}
+                            <input
+                              type="hidden"
+                              class="product-variant-id"
+                              value="{{ block.settings[product_obj_key].selected_or_first_available_variant.id }}"
+                            >
+                            <input
+                              type="hidden"
+                              class="product-quantity"
+                              value="{{ block.settings[product_qty_key] | default: 1 }}"
+                            >
+                          {% endif %}
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+
+                <div class="bundle-footer">
+                  <div class="pricing">
+                    <div class="total-price">
+                      <span class="price-label">Celková cena</span>
+                      <span class="price-value">
+                        {% if has_variant_for_total %}
+                          {{ bundle_total_money }}
+                        {% elsif block.settings.total_price != blank %}
+                          {{ block.settings.total_price }}
+                        {% else %}
+                          —
+                        {% endif %}
+                      </span>
+                    </div>
+                    <div class="gift-value">
+                      <span class="gift-label">Hodnota dárku</span>
+                      <span class="gift-value-text">
+                        {{- block.settings.gift_value | default: gift_value_label }}
+                        {{ gift_value_money -}}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    class="bundle-cta-btn"
+                    data-bundle-id="{{ block.id }}"
+                    type="button"
+                    onclick="addBundleToCart('{{ block.id }}')"
+                  >
+                    Přidat balíček a vybrat dárek
+                  </button>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="bundles-note-container">
+        <p class="bundles-note">
+          Všechny balíčky mají nárok na dárek zdarma. Sestavte si košík podle sebe – kombinujte své oblíbené Somavedic
+          zařízení, abyste dosáhli na práh pro bezplatný Somavedic. Vyberte si jakékoliv zařízení Somavedic v hodnotě
+          {{ gift_value_label }}
+          {{ gift_value_money }} jako svůj dárek!
+        </p>
+
+        <a href="{{ section.settings.final_cta_link | default: '/collections/all' }}" class="final-cta-btn">
+          {{- section.settings.final_cta_text | default: 'Koupit nyní' -}}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sekce benefitů -->
+  <div class="benefits-section">
+    <div class="container">
+      <h2 class="section-title">{{ section.settings.benefits_title | default: 'Co můžete očekávat' }}</h2>
+      <p class="section-subtitle">
+        {{
+          section.settings.benefits_subtitle
+          | default: 'Vyberte si model, který nejlépe sedí vašemu prostoru i duši'
+        }}
+      </p>
+
+      <div class="benefits-grid">
+        {% for block in section.blocks %}
+          {% if block.type == 'benefit' %}
+            <div class="benefit-card" {{ block.shopify_attributes }}>
+              <div class="benefit-icon">
+                <div class="icon-background">
+                  {% if block.settings.icon_svg != blank %}
+                    {{ block.settings.icon_svg }}
+                  {% else %}
+                    {% case block.settings.icon_type %}
+                      {% when 'harmony' %}
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 28 28"
+                          fill="none"
+                        >
+                          <path
+                            d="M14 26C20.6274 26 26 20.6274 26 14C26 7.37258 20.6274 2 14 2C7.37258 2 2 7.37258 2 14C2 20.6274 7.37258 26 14 26Z"
+                            stroke="#022669"
+                            stroke-width="2" />
+                          <path
+                            d="M14 6V22M6 14H22"
+                            stroke="#022669"
+                            stroke-width="2" />
+                        </svg>
+                      {% when 'regeneration' %}
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 28 28"
+                          fill="none"
+                        >
+                          <path
+                            d="M14 24C19.5228 24 24 19.5228 24 14C24 8.47715 19.5228 4 14 4C8.47715 4 4 8.47715 4 14C4 19.5228 8.47715 24 14 24Z"
+                            stroke="#022669"
+                            stroke-width="2" />
+                          <path
+                            d="M14 8V20M8 14H20"
+                            stroke="#022669"
+                            stroke-width="2" />
+                        </svg>
+                      {% when 'wellbeing' %}
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 28 28"
+                          fill="none"
+                        >
+                          <path
+                            d="M14 25C20.0751 25 25 20.0751 25 14C25 7.92487 20.0751 3 14 3C7.92487 3 3 7.92487 3 14C3 20.0751 7.92487 25 14 25Z"
+                            stroke="#022669"
+                            stroke-width="2" />
+                          <path
+                            d="M14 7V21M7 14H21"
+                            stroke="#022669"
+                            stroke-width="2" />
+                        </svg>
+                    {% endcase %}
+                  {% endif %}
+                </div>
+              </div>
+              <h3 class="benefit-title">{{ block.settings.title }}</h3>
+              <p class="benefit-description">{{ block.settings.description }}</p>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <p class="benefits-note">
+        Každý dárek harmonizuje vaše prostředí a snižuje dopad elektromagnetického záření (EMF).
+      </p>
+    </div>
+  </div>
+
+  <!-- Sekce FAQ -->
+  <div class="faq-section">
+    <div class="container">
+      <h2 class="section-title">{{ section.settings.faq_title | default: 'Často kladené otázky' }}</h2>
+
+      <div class="faq-list">
+        {% for block in section.blocks %}
+          {% if block.type == 'faq' %}
+            <div class="faq-item" {{ block.shopify_attributes }}>
+              <button class="faq-question" type="button">
+                <span>{{ block.settings.question }}</span>
+                <svg
+                  class="faq-icon"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    d="M4 6L8 10L12 6"
+                    stroke="#022669"
+                    stroke-width="1.5" />
+                </svg>
+              </button>
+              <div class="faq-answer">
+                <p>{{ block.settings.answer }}</p>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Závěrečná CTA sekce -->
+  <div class="final-cta-section">
+    <div
+      class="cta-background"
+      style="background-image: url('{{ section.settings.final_cta_background | img_url: '1920x1088' }}');"
+    ></div>
+    <div class="cta-overlay"></div>
+    <div class="container">
+      <h2 class="section-title">{{ section.settings.final_cta_title | default: 'Proč právě teď' }}</h2>
+      <div class="cta-content">
+        {{ section.settings.final_cta_content }}
+      </div>
+      <a href="{{ section.settings.final_cta_link | default: '/collections/all' }}" class="final-cta-btn">
+        {{- section.settings.final_cta_text | default: 'Koupit nyní' -}}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Globální styly */
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 1.25em;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* Globální písmo */
+  .somavedic-gift-landing {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Sekce hero */
+  .hero-section {
+    position: relative;
+    min-height: 840px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin-top: -56px;
+  }
+
+  .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: 100% 60%;
+    background-repeat: no-repeat;
+    opacity: 0.25;
+  }
+
+  .hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-content {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    max-width: 1200px;
+    justify-content: space-between;
+  }
+
+  .hero-text {
+    flex: 1;
+  }
+
+  .hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 32px;
+    color: #821e82;
+    margin-bottom: 8px;
+  }
+
+  .hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 56px;
+    color: #022669;
+    margin: 0 0 16px;
+    letter-spacing: -1.5px;
+  }
+
+  .hero-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 32px;
+    color: #022669;
+    margin: 0 0 24px;
+  }
+
+  .hero-cta-btn {
+    display: inline-block;
+    background: linear-gradient(to right, #022669, #832083);
+    color: white;
+    padding: 13px 46px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
+    letter-spacing: -0.4px;
+    transition: all 0.3s ease;
+  }
+
+  .hero-cta-btn:hover {
+    color: white !important;
+    box-shadow: 0 4px 6px #01216940;
+  }
+
+  .hero-image {
+    flex: 1;
+  }
+
+  .image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+
+  .image-placeholder img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+  }
+
+  /* Section Styles */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 40px;
+    color: #022669;
+    text-align: center;
+    margin: 0 0 16px;
+  }
+
+  .section-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 28px;
+    color: #022669;
+    text-align: center;
+    margin: 0 auto 48px;
+    max-width: 800px;
+  }
+
+  /* Sekce Jak to funguje */
+  .how-it-works-section {
+    background: white;
+    padding: 128px 0;
+  }
+
+  .how-it-works-layout {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+    max-width: 1040px;
+    margin: 48px auto 0;
+  }
+
+  .how-it-works-steps {
+    flex: 1 1 0;
+  }
+
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    background: white;
+    border: 1px solid rgba(2, 38, 105, 0.15);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 12px 24px rgba(2, 38, 105, 0.05);
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .step-card:hover {
+    border: 1px solid rgb(2 38 105 / 30%);
+  }
+
+  .step-icon {
+    flex-shrink: 0;
+  }
+
+  .icon-background {
+    width: 64px;
+    height: 64px;
+    background: #f9f9fb;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .icon-background svg {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .step-number {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(2, 38, 105, 0.1), rgba(131, 32, 131, 0.18));
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1;
+    color: #022669;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .step-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+    color: #022669;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .step-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+    color: #6a7795;
+    margin: 0;
+    max-width: 480px;
+  }
+
+  .how-it-works-media {
+    flex: 1 1 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .how-it-works-video-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(2, 38, 105, 0.1);
+    background: linear-gradient(135deg, rgba(2, 38, 105, 0.08), rgba(131, 32, 131, 0.08));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 656px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .how-it-works-video-wrapper.is-visible {
+    transform: translateY(0);
+    box-shadow: 0 24px 48px rgba(2, 38, 105, 0.12);
+  }
+
+  .how-it-works-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: opacity 0.3s ease;
+  }
+
+  .how-it-works-video-wrapper.is-visible .how-it-works-video {
+    opacity: 1;
+  }
+
+  .how-it-works-video-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: rgba(2, 38, 105, 0.7);
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.7);
+    transition: opacity 0.3s ease;
+  }
+
+  .how-it-works-video-wrapper.has-video.is-visible .how-it-works-video-placeholder {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Sekce balíčků */
+  .bundles-section {
+    background: #f9f9fb;
+    padding: 128px 0;
+  }
+
+  .bundles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+    align-items: stretch;
+  }
+
+  .bundle-card {
+    background: white;
+    border: 1px solid rgba(2, 38, 105, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .bundle-card:hover {
+    border: 1px solid rgb(2 38 105 / 30%);
+  }
+  .bundle-image {
+    height: auto;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .bundle-image img {
+    width: 100%;
+    height: 280px;
+    display: block;
+    object-fit: cover;
+  }
+
+  .bundle-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .bundle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .bundle-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 28px;
+    color: #022669;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .gift-badge {
+    background: rgba(2, 38, 105, 0.1);
+    border: 1px solid rgba(2, 38, 105, 0.2);
+    border-radius: 9999px;
+    padding: 3px 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: #022669;
+  }
+
+  .bundle-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22.75px;
+    color: #6a7795;
+    margin: 0 0 16px;
+  }
+
+  .products-list {
+    margin-bottom: 17px;
+  }
+
+  .products-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6a7795;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin: 0 0 8px;
+  }
+
+  .products-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .products-items li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #022669;
+  }
+
+  .bundle-footer {
+    border-top: 1px solid rgba(2, 38, 105, 0.15);
+    padding-top: 17px;
+    margin-top: auto;
+  }
+
+  .pricing {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .total-price,
+  .gift-value {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price-label,
+  .gift-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6a7795;
+  }
+
+  .price-value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 32px;
+    color: #022669;
+  }
+
+  .gift-value-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #16910b;
+    text-align: right;
+  }
+
+  .bundle-cta-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(to right, #022669, #832083);
+    color: white;
+    padding: 13px 46px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
+    letter-spacing: -0.4px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .bundle-cta-btn:hover {
+    color: white !important;
+    box-shadow: 0 4px 6px #01216940;
+  }
+
+  .bundle-cta-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .bundles-note-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    max-width: 672px;
+    margin: 0 auto;
+  }
+
+  .bundles-note {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #6a7795;
+    text-align: center;
+    margin: 0;
+  }
+
+  /* Sekce benefitů */
+  .benefits-section {
+    background: #ffffff;
+    padding: 128px 0;
+  }
+
+  .benefits-grid {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin: 5rem 0;
+  }
+
+  .benefit-card {
+    flex: 1;
+    max-width: 362.66px;
+    text-align: center;
+  }
+
+  .benefit-icon {
+    margin-bottom: 24px;
+  }
+
+  .benefit-icon .icon-background {
+    width: 56px;
+    height: 56px;
+    background: #f9f9fb;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .benefit-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #022669;
+    margin: 0 0 16px;
+  }
+
+  .benefit-description {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22.75px;
+    color: #6a7795;
+    margin: 0;
+  }
+
+  .benefits-note {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #6a7795;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 672px;
+  }
+
+  /* Sekce FAQ */
+  .faq-section {
+    background: #f9f9fb;
+    padding: 128px 0;
+  }
+
+  .faq-list {
+    max-width: 768px;
+    margin: 48px auto 0;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(2, 38, 105, 0.15);
+  }
+
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 16px 16px 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 28px;
+    color: #022669;
+  }
+
+  .faq-icon {
+    transition: transform 0.3s ease;
+  }
+
+  .faq-item.active .faq-icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .faq-item.active .faq-answer {
+    max-height: 400px;
+  }
+
+  .faq-answer p {
+    padding: 0 0 16px;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #6a7795;
+  }
+
+  /* Závěrečná sekce CTA */
+  .final-cta-section {
+    position: relative;
+    background: white;
+    padding: 128px 0;
+    overflow: hidden;
+  }
+
+  .cta-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: top left;
+    background-repeat: no-repeat;
+  }
+
+  .cta-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.5)
+    );
+  }
+
+  .final-cta-section .container {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .cta-content {
+    max-width: 672px;
+    margin: 0 auto 32px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 32px;
+    color: #022669;
+  }
+
+  .cta-content p {
+    color: #022669;
+  }
+
+  .final-cta-btn {
+    display: inline-block;
+    background: linear-gradient(to right, #022669, #832083);
+    color: white;
+    padding: 13px 46px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
+    letter-spacing: -0.4px;
+    transition: all 0.3s ease;
+  }
+
+  .final-cta-btn:hover {
+    color: white !important;
+    box-shadow: 0 4px 6px #01216940;
+  }
+
+  /* Responzivní design */
+  @media (max-width: 1024px) {
+    .hero-content {
+      flex-direction: column;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .how-it-works-layout {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .how-it-works-media {
+      width: 100%;
+    }
+
+    .how-it-works-video-wrapper {
+      min-height: 280px;
+    }
+
+    .bundles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .benefits-grid {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      margin-top: -35px;
+    }
+    .hero-subtitle {
+      font-size: 18px;
+      line-height: 24px;
+    }
+    .hero-title {
+      font-size: 32px;
+      line-height: 40px;
+    }
+
+    .hero-description {
+      font-size: 18px;
+      line-height: 28px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      line-height: 32px;
+    }
+
+    .section-subtitle {
+      font-size: 18px;
+      line-height: 26px;
+    }
+    .hero-container,
+    .container {
+      padding: 32px 16px;
+    }
+
+    .how-it-works-section,
+    .bundles-section,
+    .benefits-section,
+    .faq-section,
+    .final-cta-section {
+      padding: 64px 0;
+    }
+
+    .steps-list {
+      gap: 16px;
+    }
+
+    .step-card {
+      padding: 20px;
+      gap: 16px;
+    }
+
+    .step-number {
+      width: 24px;
+      height: 24px;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+    }
+
+    .icon-background {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      line-height: 26px;
+    }
+
+    .step-description {
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .how-it-works-video-placeholder {
+      font-size: 14px;
+      line-height: 22px;
+      padding: 16px;
+    }
+
+    .bundle-image img {
+      width: 100%;
+      height: 161px;
+      display: block;
+      object-fit: contain;
+    }
+    .bundle-cta-btn {
+      padding: 13px 24px;
+    }
+
+    .gift-badge {
+      border-radius: 16px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const faqItems = document.querySelectorAll('.faq-item');
+      if (!faqItems.length) {
+        return;
+      }
+
+      faqItems.forEach((item) => {
+        const question = item.querySelector('.faq-question');
+        if (!question) {
+          return;
+        }
+
+        question.addEventListener('click', function () {
+          const isActive = item.classList.contains('active');
+
+          faqItems.forEach((otherItem) => {
+            if (otherItem !== item) {
+              otherItem.classList.remove('active');
+            }
+          });
+
+          if (isActive) {
+            item.classList.remove('active');
+          } else {
+            item.classList.add('active');
+          }
+        });
+      });
+
+      const bundleButtons = document.querySelectorAll('.bundle-cta-btn');
+      bundleButtons.forEach((button) => {
+        button.classList.add('bundle-cta-btn--ajax');
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        });
+      });
+    });
+  })();
+
+  // Funkce košíku pro balíčky
+  function addBundleToCart(bundleId) {
+    const bundleCard = document.querySelector(`[data-bundle-id="${bundleId}"]`);
+    if (!bundleCard) {
+      console.error('Karta balíčku nebyla nalezena pro ID:', bundleId);
+      return;
+    }
+
+    const button = bundleCard.querySelector('.bundle-cta-btn');
+    const productVariants = bundleCard.querySelectorAll('.product-variant-id');
+
+    console.log('ID balíčku:', bundleId);
+    console.log('Karta balíčku nalezena:', bundleCard);
+    console.log('Nalezené varianty produktů:', productVariants.length);
+    console.log('Varianty produktů:', productVariants);
+
+    if (productVariants.length === 0) {
+      console.error('Pro tento balíček nejsou nakonfigurovány žádné produkty. Kontaktujte podporu.');
+      console.log('Dostupné prvky v kartě balíčku:', bundleCard.innerHTML);
+      showMessage('Produkty balíčku je třeba nejprve nakonfigurovat. Přesměrováváme do obchodu...', 'info');
+      // Show instructions for configuring products
+      const bundleTitle = bundleCard.querySelector('.bundle-title')?.textContent || 'this bundle';
+      showMessage(`Nejprve prosím nakonfigurujte produkty pro ${bundleTitle} v administraci Shopify.`, 'info');
+      setTimeout(() => {
+        window.location.href = '/collections/all?note=Bundle+configuration+required';
+      }, 3000);
+      return;
+    }
+
+    // Disable button and show loading state
+    button.disabled = true;
+    button.textContent = 'Přidáváme do košíku...';
+
+    // Collect all variant IDs and quantities
+    const items = [];
+    productVariants.forEach((variantInput) => {
+      const quantityInput = variantInput.parentElement.querySelector('.product-quantity');
+      const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+
+      if (variantInput.value) {
+        items.push({
+          id: variantInput.value,
+          quantity: quantity,
+        });
+      }
+    });
+
+    if (items.length === 0) {
+      console.error('V tomto balíčku nebyly nalezeny platné produkty. Kontaktujte podporu.');
+      showMessage('V tomto balíčku nebyly nalezeny platné produkty. Kontaktujte podporu.', 'error');
+      button.disabled = false;
+      button.textContent = 'Přidat balíček a vybrat dárek';
+      return;
+    }
+
+    console.log('Přidáváme položky do košíku:', items);
+
+    // Přidání položek do košíku pomocí Shopify AJAX API
+    fetch('/cart/add.js', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({ items: items }),
+    })
+      .then((response) => {
+        console.log('Stav odpovědi:', response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Odpověď košíku:', data);
+        if (data.status === 422 || data.errors) {
+          console.error('Některé produkty v tomto balíčku aktuálně nejsou dostupné.', data.errors);
+          showMessage(
+            'Některé produkty v tomto balíčku nejsou momentálně k dispozici. Zkuste to prosím později.',
+            'error'
+          );
+          return;
+        }
+
+        showMessage('Balíček byl úspěšně přidán do košíku!', 'success');
+        openAssortionSideCart();
+      })
+      .catch((error) => {
+        console.error('Chyba při přidávání balíčku do košíku:', error);
+        showMessage('Při přidávání balíčku do košíku došlo k chybě. Zkuste to prosím znovu.', 'error');
+      })
+      .finally(() => {
+        // Re-enable button
+        button.disabled = false;
+        button.textContent = 'Přidat balíček a vybrat dárek';
+      });
+  }
+
+  // Helper function to show messages instead of alert
+  function showMessage(message, type = 'info') {
+    // Try to use Shopify's notification system if available
+    if (window.Shopify && window.Shopify.theme && window.Shopify.theme.notification) {
+      window.Shopify.theme.notification.show(message, type);
+    } else {
+      // Fallback: create a simple notification
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'error' ? '#ff4444' : '#44ff44'};
+        color: white;
+        border-radius: 4px;
+        z-index: 10000;
+        font-family: Inter, sans-serif;
+        font-size: 14px;
+        max-width: 300px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 5000);
+    }
+  }
+
+  function openAssortionSideCart() {
+    if (window.Assortion && window.Assortion.cart && typeof window.Assortion.cart.open === 'function') {
+      window.Assortion.cart.open();
+      return;
+    }
+
+    if (window.Assortion && typeof window.Assortion.open === 'function') {
+      window.Assortion.open();
+      return;
+    }
+
+    const cartTrigger = document.querySelector('.site-header__icon.site-header__cart');
+    if (cartTrigger) {
+      cartTrigger.click();
+      return;
+    }
+
+    const cartButton = document.querySelector('[data-cart-toggle], [data-action="toggle-cart"], .header__icon--cart');
+    if (cartButton) {
+      cartButton.dispatchEvent(new Event('click', { bubbles: true }));
+      return;
+    }
+
+    console.warn('Boční košík Assortion se nepodařilo automaticky otevřít.');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Somavedic gift LP",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Sekce hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_background_image",
+      "label": "Pozadí hero sekce"
+    },
+    {
+      "type": "text",
+      "id": "hero_subtitle",
+      "label": "Podtitulek hero",
+      "default": "Vytvořte si své útočiště"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Titulek hero",
+      "default": "Somavedic jako dárek"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_description",
+      "label": "Popis hero"
+    },
+    {
+      "type": "number",
+      "id": "gift_threshold_cents",
+      "label": "Prahová částka pro dárek (v centech)",
+      "default": 460000,
+      "info": "Zadejte minimální částku útraty v centech (např. 460000 = 4 600 $)."
+    },
+    {
+      "type": "number",
+      "id": "gift_value_cents",
+      "label": "Hodnota dárku (v centech)",
+      "default": 265000,
+      "info": "Zadejte maximální hodnotu dárku v centech (např. 265000 = 2 650 $)."
+    },
+    {
+      "type": "text",
+      "id": "gift_value_label",
+      "label": "Prefix hodnoty dárku",
+      "default": "Až do",
+      "info": "Volitelný text před hodnotou dárku (např. Až do)."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_text",
+      "label": "Text CTA tlačítka v hero",
+      "default": "Koupit nyní"
+    },
+    {
+      "type": "url",
+      "id": "hero_cta_link",
+      "label": "Odkaz CTA v hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_product_image",
+      "label": "Obrázek produktu v hero"
+    },
+    {
+      "type": "header",
+      "content": "Sekce Jak to funguje"
+    },
+    {
+      "type": "text",
+      "id": "how_it_works_title",
+      "label": "Titulek sekce Jak to funguje",
+      "default": "Jak to funguje"
+    },
+    {
+      "type": "url",
+      "id": "how_it_works_video_url",
+      "label": "URL videa Jak to funguje",
+      "info": "Vložte přímou URL na MP4/WebM hostovanou v souborech Shopify nebo na CDN."
+    },
+    {
+      "type": "image_picker",
+      "id": "how_it_works_video_poster",
+      "label": "Poster videa Jak to funguje"
+    },
+    {
+      "type": "text",
+      "id": "how_it_works_video_placeholder",
+      "label": "Text zástupného videa",
+      "default": "Ukázka videa již brzy"
+    },
+    {
+      "type": "header",
+      "content": "Sekce balíčků"
+    },
+    {
+      "type": "text",
+      "id": "bundles_title",
+      "label": "Titulek sekce balíčků",
+      "default": "Vaše cesta k harmonii"
+    },
+    {
+      "type": "textarea",
+      "id": "bundles_subtitle",
+      "label": "Podtitulek sekce balíčků",
+      "default": "Dokonale sladěné kombinace navržené tak, aby dosáhly prahu útraty a vytvořily kompletní řešení pro váš domov."
+    },
+    {
+      "type": "header",
+      "content": "Sekce benefitů"
+    },
+    {
+      "type": "text",
+      "id": "benefits_title",
+      "label": "Titulek sekce benefitů",
+      "default": "Co můžete očekávat"
+    },
+    {
+      "type": "text",
+      "id": "benefits_subtitle",
+      "label": "Podtitulek sekce benefitů",
+      "default": "Vyberte si model, který nejlépe sedí vašemu prostoru i duši"
+    },
+    {
+      "type": "header",
+      "content": "Sekce FAQ"
+    },
+    {
+      "type": "text",
+      "id": "faq_title",
+      "label": "Titulek FAQ",
+      "default": "Často kladené otázky"
+    },
+    {
+      "type": "header",
+      "content": "Závěrečná sekce CTA"
+    },
+    {
+      "type": "text",
+      "id": "final_cta_title",
+      "label": "Titulek závěrečného CTA",
+      "default": "Proč právě teď"
+    },
+    {
+      "type": "richtext",
+      "id": "final_cta_content",
+      "label": "Obsah závěrečného CTA",
+      "default": "<p>Každý den strávený v harmonickém prostředí znamená <strong>silnější imunitu</strong>, <strong>hlubší regeneraci</strong> a radostnější dny. Začněte si svůj ideální domov tvořit už dnes – místo, kde se vaše <strong>tělo uvolní</strong> a <strong>mysl zpomalí</strong>. Dopřejte si trvalou harmonii.</p>"
+    },
+    {
+      "type": "text",
+      "id": "final_cta_text",
+      "label": "Text tlačítka závěrečného CTA",
+      "default": "Koupit nyní"
+    },
+    {
+      "type": "url",
+      "id": "final_cta_link",
+      "label": "Odkaz závěrečného CTA"
+    },
+    {
+      "type": "image_picker",
+      "id": "final_cta_background",
+      "label": "Pozadí závěrečného CTA"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Krok",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titulek kroku"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Popis kroku"
+        },
+        {
+          "type": "liquid",
+          "id": "icon_svg",
+          "label": "SVG ikony kroku",
+          "info": "Vložte inline SVG nebo Liquid. Pokud necháte prázdné, použije se výchozí ikona."
+        }
+      ]
+    },
+    {
+      "type": "bundle",
+      "name": "Balíček",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "bundle_image",
+          "label": "Obrázek balíčku"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titulek balíčku"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Popis balíčku"
+        },
+        {
+          "type": "product",
+          "id": "product_obj_1",
+          "label": "Produkt 1"
+        },
+        {
+          "type": "text",
+          "id": "product_1",
+          "label": "Zobrazovaný název produktu 1"
+        },
+        {
+          "type": "number",
+          "id": "product_qty_1",
+          "label": "Množství produktu 1",
+          "default": 1,
+          "info": "Kolik kusů tohoto produktu přidat do košíku."
+        },
+        {
+          "type": "product",
+          "id": "product_obj_2",
+          "label": "Produkt 2"
+        },
+        {
+          "type": "text",
+          "id": "product_2",
+          "label": "Zobrazovaný název produktu 2"
+        },
+        {
+          "type": "number",
+          "id": "product_qty_2",
+          "label": "Množství produktu 2",
+          "default": 1,
+          "info": "Kolik kusů tohoto produktu přidat do košíku."
+        },
+        {
+          "type": "product",
+          "id": "product_obj_3",
+          "label": "Produkt 3"
+        },
+        {
+          "type": "text",
+          "id": "product_3",
+          "label": "Zobrazovaný název produktu 3"
+        },
+        {
+          "type": "number",
+          "id": "product_qty_3",
+          "label": "Množství produktu 3",
+          "default": 1,
+          "info": "Kolik kusů tohoto produktu přidat do košíku."
+        },
+        {
+          "type": "product",
+          "id": "product_obj_4",
+          "label": "Produkt 4"
+        },
+        {
+          "type": "text",
+          "id": "product_4",
+          "label": "Zobrazovaný název produktu 4"
+        },
+        {
+          "type": "number",
+          "id": "product_qty_4",
+          "label": "Množství produktu 4",
+          "default": 1,
+          "info": "Kolik kusů tohoto produktu přidat do košíku."
+        },
+        {
+          "type": "product",
+          "id": "product_obj_5",
+          "label": "Produkt 5"
+        },
+        {
+          "type": "text",
+          "id": "product_5",
+          "label": "Zobrazovaný název produktu 5"
+        },
+        {
+          "type": "number",
+          "id": "product_qty_5",
+          "label": "Množství produktu 5",
+          "default": 1,
+          "info": "Kolik kusů tohoto produktu přidat do košíku."
+        },
+        {
+          "type": "text",
+          "id": "total_price",
+          "label": "Celková cena (volitelné přepsání)",
+          "info": "Pokud necháte prázdné, cena se vypočítá z nakonfigurovaných produktů."
+        },
+        {
+          "type": "text",
+          "id": "gift_value",
+          "label": "Prefix hodnoty dárku",
+          "default": "Až do"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "CTA odkaz"
+        }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titulek benefitu"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Popis benefitu"
+        },
+        {
+          "type": "liquid",
+          "id": "icon_svg",
+          "label": "SVG ikony benefitu",
+          "info": "Vložte inline SVG. Pokud necháte prázdné, použije se přednastavená ikona."
+        },
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Přednastavená ikona",
+          "default": "harmony",
+          "options": [
+            {
+              "value": "harmony",
+              "label": "Harmonie"
+            },
+            {
+              "value": "regeneration",
+              "label": "Regenerace"
+            },
+            {
+              "value": "wellbeing",
+              "label": "Pohoda"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ položka",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Otázka"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Odpověď"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Somavedic dárková landing page",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Postavte si košík",
+            "description": "Přidávejte zařízení Somavedic do košíku, dokud nedosáhnete požadované útraty."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Vyberte si dárek",
+            "description": "Než dokončíte objednávku, vyberte zařízení Somavedic, které získáte jako dárek."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Užívejte harmonii",
+            "description": "Připravte se na plnou dávku harmonizačních pokladů."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "harmony",
+            "title": "Harmonizuje vaše prostředí",
+            "description": "Snižuje dopad elektromagnetického záření (EMF) a vytváří čistší prostor."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "regeneration",
+            "title": "Podporuje regeneraci",
+            "description": "Podporuje klid a kvalitní spánek pro lepší zotavení."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon_type": "wellbeing",
+            "title": "Přináší pohodu",
+            "description": "Vytváří pocit pohody, který nelze zapnout pouhým tlačítkem."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Jaká je minimální útrata pro získání dárku?",
+            "answer": "K získání dárku musíte dosáhnout aktuálně nastaveného prahu útraty za zařízení Somavedic."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Mohu si vybrat jakýkoli model Somavedic jako dárek?",
+            "answer": "Ano, můžete zvolit jakékoli zařízení Somavedic až do uvedené hodnoty dárku."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Kdy si svůj dárek vyberu?",
+            "answer": "Svůj dárek vybíráte během dokončování objednávky ještě před jejím zaplacením."
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Proč nemusí jeden Somavedic stačit pro ochranu celé domácnosti?",
+            "answer": "Zda je jeden Somavedic dostačující pro celou domácnost závisí na více faktorech než jen na metráži. Somavedic vyzařuje harmonizační pole s dosahem až 30 metrů ve všech směrech, ale jeho účinnost ovlivňuje elektrosmog (EMF), geopatogenní zóny i celková atmosféra prostoru. Tyto aspekty se v každém domě liší, proto nemůžeme zaručit, že jedno zařízení bude stačit. Ve mnoha případech je model Vedic nebo Amber skvělým začátkem – zejména pro menší prostory. Pokud je váš domov větší, má více pater, silnější EMF zátěž nebo jste citlivější, vyplatí se rozmístit další zařízení a harmonizační pole tak posílit."
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Ultimátní Amber útočiště",
+            "description": "Zažijte bezkonkurenční ochranu a podporu – ideální pro všechny, kdo milují pohodlí chytrých domovů a inovace elektromobilů.",
+            "product_1": "2 × Amber",
+            "product_qty_1": 2,
+            "gift_value": "Až do"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Kompletní systém doma i na cestách",
+            "description": "Dokonalý balíček pro celkovou ochranu, ať jste doma nebo na cestách. Kombinuje výkonnou hlavní jednotku s cestovními a doplňkovými zařízeními.",
+            "product_1": "1 × Amber",
+            "product_2": "1 × Rosalin",
+            "product_3": "1 × Anthracite",
+            "product_4": "1 × Traveller",
+            "product_qty_1": 1,
+            "product_qty_2": 1,
+            "product_qty_3": 1,
+            "product_qty_4": 1,
+            "gift_value": "Až do"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Kolekce domácí harmonie Vedic",
+            "description": "Navrženo pro rodiny a vícegenerační domácnosti. Umístěte jeden Vedic do srdce domova a další v ložnicích či pracovně – harmonie tak doprovodí každého člena rodiny i hosty.",
+            "product_1": "5 × Vedic",
+            "product_qty_1": 5,
+            "gift_value": "Až do"
+          }
+        },
+        {
+          "type": "bundle",
+          "settings": {
+            "title": "Kombinované řešení pro více pater",
+            "description": "Chytré řešení pro plynulé pokrytí vícepodlažních domů, prostorných bytů nebo kanceláří. Kombinuje tři základní jednotky s doplňkovým zařízením pro výkon přesně tam, kde ho potřebujete.",
+            "product_1": "3 × Vedic",
+            "product_qty_1": 3,
+            "product_2": "1 × Rosalin nebo Anthracite",
+            "product_qty_2": 1,
+            "gift_value": "Až do"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
