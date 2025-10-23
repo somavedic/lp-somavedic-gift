@@ -3,8 +3,8 @@
   A comprehensive landing page showcasing gift bundles and benefits
 {% endcomment %}
 
-{% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 460000 %}
-{% assign gift_value_cents = section.settings.gift_value_cents | default: 265000 %}
+{% assign gift_threshold_cents = section.settings.gift_threshold_cents | default: 400000 %}
+{% assign gift_value_cents = section.settings.gift_value_cents | default: 210000 %}
 {% assign gift_value_label = section.settings.gift_value_label | default: 'Bis zu' %}
 {% assign gift_threshold_money = gift_threshold_cents | money_without_trailing_zeros %}
 {% assign gift_value_money = gift_value_cents | money_without_trailing_zeros %}

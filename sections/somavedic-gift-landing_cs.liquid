@@ -7,7 +7,21 @@
 {% assign gift_value_cents = section.settings.gift_value_cents | default: 4985200 %}
 {% assign gift_value_label = section.settings.gift_value_label | default: 'až' %}
 {% assign gift_threshold_money = gift_threshold_cents | money_without_trailing_zeros %}
+{% assign gift_threshold_money = gift_threshold_money
+  | replace: '&nbsp;', ' '
+  | replace: '&#8239;', ' '
+  | replace: '€', ''
+  | strip
+  | append: ' €'
+%}
 {% assign gift_value_money = gift_value_cents | money_without_trailing_zeros %}
+{% assign gift_value_money = gift_value_money
+  | replace: '&nbsp;', ' '
+  | replace: '&#8239;', ' '
+  | replace: '€', ''
+  | strip
+  | append: ' €'
+%}
 
 <section class="somavedic-gift-landing" data-section-id="{{ section.id }}">
   <!-- Sekce hero -->
@@ -266,6 +280,13 @@
               {% if has_variant_for_total %}
                 {% assign bundle_total_amount = bundle_total_cents | plus: 0 %}
                 {% assign bundle_total_money = bundle_total_amount | money_without_trailing_zeros %}
+                {% assign bundle_total_money = bundle_total_money
+                  | replace: '&nbsp;', ' '
+                  | replace: '&#8239;', ' '
+                  | replace: '€', ''
+                  | strip
+                  | append: ' €'
+                %}
               {% endif %}
               <div class="bundle-content">
                 <div class="bundle-header">
