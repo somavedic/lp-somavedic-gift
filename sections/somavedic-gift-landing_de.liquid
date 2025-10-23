@@ -25,10 +25,10 @@
             {% if section.settings.hero_description != blank %}
               {{ section.settings.hero_description }}
             {% else %}
-              Goennen Sie sich heute zusaetzliche Harmonie. Geben Sie {{ gift_threshold_money }} oder mehr fuer
-              Somavedic-Geraete aus und waehlen Sie ein weiteres als unser Geschenk fuer Sie oder Ihre Familie und
-              Freundinnen und Freunde - {{ gift_value_label }}
-              {{ gift_value_money }} Wert!
+              Gönnen Sie sich heute zusätzliche Harmonie. Geben Sie {{ gift_threshold_money }} oder mehr für
+              Somavedic-Geräte aus und wählen Sie ein weiteres Gerät als unser Geschenk für Sie, Ihre Familie oder
+              Freunde – im Wert von {{ gift_value_label }}
+              {{ gift_value_money }}!
             {% endif %}
           </p>
           <a href="{{ section.settings.hero_cta_link | default: '/collections/all' }}" class="hero-cta-btn">
@@ -271,7 +271,7 @@
               <div class="bundle-content">
                 <div class="bundle-header">
                   <h3 class="bundle-title">{{ block.settings.title }}</h3>
-                  <span class="gift-badge">+ GRATIS-Geschenk!</span>
+                  <span class="gift-badge">+ GESCHENK gratis!</span>
                 </div>
                 <p class="bundle-description">{{ block.settings.description }}</p>
 
@@ -343,7 +343,7 @@
                     type="button"
                     onclick="addBundleToCart('{{ block.id }}')"
                   >
-                    Bundle hinzufuegen & Geschenk waehlen
+                    Paket hinzufügen und Geschenk auswählen
                   </button>
                 </div>
               </div>
@@ -353,10 +353,10 @@
       </div>
       <div class="bundles-note-container">
         <p class="bundles-note">
-          Alle Bundles qualifizieren sich fuer ein Gratisgeschenk. Stellen Sie Ihren Warenkorb ganz nach Ihren Wuenschen
-          zusammen — kombinieren Sie Ihre Lieblings-Somavedic-Geraete, um die Somavedic-Grenze fuer Gratisgeschenke zu
-          erreichen. Waehlen Sie ein beliebiges Somavedic-Geraet {{ gift_value_label }}
-          {{ gift_value_money }} Wert als Ihr Geschenk!
+          Alle Produktpakete berechtigen Sie zu einem kostenlosen Geschenk. Stellen Sie Ihren Warenkorb ganz nach Ihren
+          Wünschen zusammen – kombinieren Sie Ihre Lieblings-Somavedic-Geräte, um den Schwellenwert für ein kostenloses
+          Somavedic zu erreichen. Wählen Sie ein beliebiges Somavedic-Gerät im Wert von {{ gift_value_label }}
+          {{ gift_value_money }} als Ihr Geschenk aus!
         </p>
 
         <a href="{{ section.settings.final_cta_link | default: '/collections/all' }}" class="final-cta-btn">
@@ -369,11 +369,11 @@
   <!-- Benefits Section -->
   <div class="benefits-section">
     <div class="container">
-      <h2 class="section-title">{{ section.settings.benefits_title | default: 'Was koennen Sie erwarten' }}</h2>
+      <h2 class="section-title">{{ section.settings.benefits_title | default: 'Was Sie erwarten können' }}</h2>
       <p class="section-subtitle">
         {{
           section.settings.benefits_subtitle
-          | default: 'Waehlen Sie das Modell, das am besten zu Ihrem Raum und Ihrer Seele passt'
+          | default: 'Wählen Sie das Modell, das am besten zu Ihrem Raum und Ihrer Seele passt.'
         }}
       </p>
 
